@@ -15,9 +15,10 @@ import rehypeSlug from 'rehype-slug';
 
 export default async function Page({ params }) {
     const filepath = `content/${params.slug}.md`;
-    
+
     // Check if file exists
     if (!fs.existsSync(filepath)) { 
+        console.error(`File not found: ${filepath}`); // Log for debugging
         notFound(); // File nahi mila toh 404 page dikhana hai
         return; 
     }
@@ -44,6 +45,7 @@ export default async function Page({ params }) {
         });
 
     const htmlContent = (await processor.process(content)).toString();
+    console.log(htmlContent); // Log to check HTML output
 
     return (
         <div className="max-w-6xl mx-auto p-4">
