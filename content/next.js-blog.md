@@ -7,7 +7,7 @@ author: AleemaKhan
 image: /next.js.jpg
 ---
 
-Welcome to this comprehensive C programming tutorial! Whether you're a complete beginner or looking to deepen your understanding of C, this guide will take you through the fundamentals and introduce advanced concepts as you progress.
+Welcome to this comprehensive Next.js programming tutorial! Whether you're a complete beginner or looking to deepen your understanding of Next.js, this guide will take you through the fundamentals and introduce advanced concepts as you progress.
 
 
 ## Table of Contents
