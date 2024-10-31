@@ -13,14 +13,20 @@ import OnThisPage from "@/components/onthispage";
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeSlug from 'rehype-slug';
 
-export default async function Page({ params }) {
+export async function generateStaticParams() {
+    const files = fs.readdirSync('content');
+    const paths = files.map(file => ({
+        slug: file.replace('.md', ''),
+    }));
+
+    return paths;
+}
+
+const BlogPost = async ({ params }) => {
     const filepath = `content/${params.slug}.md`;
 
-    // Check if file exists
     if (!fs.existsSync(filepath)) { 
-        console.error(`File not found: ${filepath}`); // Log for debugging
-        notFound(); // File nahi mila toh 404 page dikhana hai
-        return; 
+        return notFound();
     }
 
     const fileContent = fs.readFileSync(filepath, "utf-8");
@@ -29,7 +35,7 @@ export default async function Page({ params }) {
     const processor = unified()
         .use(remarkParse)
         .use(remarkRehype)
-        .use(rehypeDocument, { title: '👋🌍' })
+        .use(rehypeDocument, { title: data.title || 'Blog Post' })
         .use(rehypeFormat)
         .use(rehypeStringify) 
         .use(rehypeSlug)
@@ -45,7 +51,6 @@ export default async function Page({ params }) {
         });
 
     const htmlContent = (await processor.process(content)).toString();
-    console.log(htmlContent); // Log to check HTML output
 
     return (
         <div className="max-w-6xl mx-auto p-4">
@@ -53,10 +58,12 @@ export default async function Page({ params }) {
             <p className="text-base mb-2 border-l-4 border-gray-500 pl-4 italic">&quot;{data.description}&quot;</p>
             <div className="flex gap-2">
                 <p className="text-sm text-gray-500 mb-4 italic">By {data.author}</p>
-                <p className="text-sm text-gray-500 mb-4">{data.date}</p>
+                <p className="text-sm text-gray-500 mb-4">{new Date(data.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })}</p>
             </div>
             <div dangerouslySetInnerHTML={{ __html: htmlContent }} className="prose dark:prose-invert"></div>
             <OnThisPage htmlContent={htmlContent} />
         </div>
     );
-}
+};
+
+export default BlogPost;
